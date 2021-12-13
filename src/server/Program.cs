@@ -1,6 +1,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 
 using BlitzBit;
 
@@ -16,7 +17,7 @@ namespace Tolt {
 
                 Logging.Log("Starting! ..");
 
-                Logging.Log("OS: " + Environment.OSVersion);
+                Logging.Log("OS: " + Environment.OSVersion.ToString().Replace("Unix", "GNU/Linux"));
                 Logging.Log("Machine Type: " + (Environment.Is64BitOperatingSystem ? "amd64" : "i386"));
                 Logging.Log("Machine Name: " + Environment.MachineName);
                 Logging.Log("Running in CLI: " + Environment.CommandLine);
@@ -27,12 +28,28 @@ namespace Tolt {
                 Logging.Log("Tolt Server. 2021.");
 
                 Logging.Log("Declare Server...");
-
-                
+                Network.Declare();
 
                 Logging.Log("Initialize Components...");
 
+                MessageServer.Init();
+                ContentDistribution.Init();
 
+                Logging.Log("Components initialized successfully.");
+
+                Logging.Log("Passing Control to ServerLoop.");
+
+                Loop();
+            }
+
+            public static void Loop () {
+
+                while (true) {
+
+                    Network.server.RunCallBacks();
+
+                    Thread.Sleep(4);
+                }
             }
         }
     }

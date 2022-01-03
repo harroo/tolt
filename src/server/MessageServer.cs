@@ -25,6 +25,8 @@ namespace Tolt {
                 string contents = packet.GetString();
 
                 Logging.Log("<" + sender + "> " + contents);
+
+                Network.server.RelayAll(3, data);
             }
 
             private static void GetMessages (int senderId, byte[] data) {

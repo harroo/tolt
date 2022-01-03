@@ -37,6 +37,10 @@ namespace Tolt {
 
                 Logging.Log("Components initialized successfully.");
 
+                Logging.Log("Sarting Server...");
+                Network.Start();
+                Logging.Log("Sarted Server!");
+
                 Logging.Log("Passing Control to ServerLoop.");
 
                 Loop();

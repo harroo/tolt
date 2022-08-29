@@ -1,4 +1,7 @@
 
+using System.IO;
+using System.Collections.Generic;
+
 using BlitzBit;
 
 namespace Tolt {
@@ -11,36 +14,34 @@ namespace Tolt {
 
                 Logging.Log("Initializing...");
 
-                Network.server.AddPacket(3, OnMessage);
-                Network.server.AddPacket(4, GetMessages);
+                Network.server.AddPacket(PacketId.SubscribeToChannel, OnSubscribe);
+                Network.server.AddPacket(PacketId.UnsubscribeToChannel, OnUnsubscribe);
+
+		Network.server.AddPacket(PacketId.GetFromChannel, GetFromChannel);
+		Network.server.AddPacket(PacketId.SendToChannel, SendToChannel);
 
                 Logging.Log("Done!");
             }
 
-            private static void OnMessage (int senderId, byte[] data) {
+	    private static void Dictionary<string, List<int>> channelSubscriptions
+		    = new Dictionary<string, List<int>>();
 
-                BlitPacket packet = new BlitPacket(data);
+	    private static void OnSubscribe (int senderId, byte[] data) {
 
-                string sender = packet.GetString();
-                string contents = packet.GetString();
+		    BlitPacket recvPacket = new BlitPacket(data);
 
-                Logging.Log("<" + sender + "> " + contents);
+		    string userAgent = recvPacket.GetString();
+		    string sender = recvPacket.GetString();
 
-                Network.server.RelayAll(3, data);
-            }
+		    string channelId = recvPacket.GetString();
 
-            private static void GetMessages (int senderId, byte[] data) {
+		    if (!channelSubscriptions.ContainsKey(channelId))
+			    channelSubscriptions.Add(channelId, new List<int>());
 
-                BlitPacket packet = new BlitPacket(data);
+		    //if channel subscriptions for the channel id dont contain this sender id add it
+	    }
 
-                string requester = packet.GetString();
-                string channelId = packet.GetString();
-                int messageCount = packet.GetInt32();
-
-                Logging.Log("'" + requester + "' asked for " + messageCount + " message(s) from '" + channelId + "'.");
-
-                //TODO: send back the messages asked for
-            }
+	    //continue on with that
         }
     }
 }

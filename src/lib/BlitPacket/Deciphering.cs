@@ -28,6 +28,16 @@ namespace BlitzBit {
             return Encoding.Unicode.GetString(textBuf);
         }
 
+        public byte[] GetByteArray () { CheckBuffers();
+
+            int size = BitConverter.ToInt32(byteBuffer, index); index += 4;
+
+            byte[] outBuf = new byte[size];
+            Buffer.BlockCopy(byteBuffer, index, outBuf, 0, size); index += size;
+
+            return outBuf;
+        }
+
         // public System.SByte GetSByte () { CheckBuffers();
         //
         //     System.SByte val = BitConverter.ToSByte(byteBuffer, index); index += 1;
@@ -47,9 +57,9 @@ namespace BlitzBit {
 
             return val;
         }
-        public System.UInt32 GetUInt16 () { CheckBuffers();
+        public System.UInt16 GetUInt16 () { CheckBuffers();
 
-            System.UInt32 val = BitConverter.ToUInt16(byteBuffer, index); index += 2;
+            System.UInt16 val = BitConverter.ToUInt16(byteBuffer, index); index += 2;
 
             return val;
         }
